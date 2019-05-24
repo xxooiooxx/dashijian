@@ -9,6 +9,8 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- bs导入css -->
+    
 </head>
 
 <body>
@@ -25,6 +27,7 @@
                 <i class="iconfont icon-key"></i>
                 <input type="text" class="input_txt" placeholder="邮箱/手机号">
                 <input type="password" class="input_pass" placeholder="密码">
+                <p class="login_p"></p>
                 <input type="submit" class="input_sub" value="登 录">
             </form>
         </div>
@@ -34,3 +37,64 @@
 </body>
 
 </html>
+<script src="./js/jquery-1.12.4.min.js"></script>
+<script src="./js/echarts.min.js"></script>
+<script>
+    function login(){
+         //清除表的影响
+        $('.login_form').submit(function(e){
+        e.preventDefault()
+    })
+        // 获取value值 .trim()清除空格
+        var user_name = $('.input_txt').val().trim()
+        var password = $('.input_pass').val().trim()
+         // 增加loaing
+        //  $('.input_sub').attr('value','')
+        //  $('.input_sub').css('background', url('../images/5-121204194036.gif'))
+         $('.input_sub').addClass('loading')
+          // 清空内容
+          $('.login_p').html('')
+          //调用接口
+          if(user_name == '' || password == ''){
+            $('.login_p').text('用户名,密码不能为空')
+            return
+        }
+          $.ajax({
+            url: 'https://autumnfish.cn/big/admin/login',
+            type: 'post',
+            data:{
+                user_name:user_name,
+                password:password
+            },
+            success:function(backData){
+                setTimeout(() => {
+                    $('.input_sub').removeClass('loading')
+              if(backData.code == 200){                                  
+                    window.location.href = './index.html'               
+                }else if (backData.code == 400){
+                    $('.login_p').text('用户名,密码错误,请重新输入')
+                }
+                
+                // $('.input_sub').removeClass('loading')
+            
+                }, 1500)
+            }
+          })
+    }
+
+    $(function(){
+        $('.input_sub').click(function(){
+          
+            login()
+        })
+        $('.input_pass').keyup(function(e) {
+          if (e.keyCode == 13) {
+         
+            // 调用方法
+            login()
+          }
+        })
+    })
+
+ 
+</script>

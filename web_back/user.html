@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <script src="js/jquery-1.12.4.min.js"></script>
-
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -24,19 +24,19 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="李思思">
+                        <input type="text" class="form-control username" id="inputEmail3" value="李思思" name="username">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="思思">
+                        <input type="text" class="form-control nickname" id="inputEmail3" value="思思" name="nickname">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="lisisi@126.com">
+                        <input type="text" class="form-control email" id="inputEmail3" value="lisisi@126.com"  name="email">
                     </div>
                 </div>
                 
@@ -44,14 +44,14 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
                         <img src="images/2.jpg" alt="" class="user_pic">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" id="exampleInputFile"  name="user_pic">
                     </div>
                 </div>
 
                 <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
                         <div class="col-sm-4">
-                            <input type="password" class="form-control" id="inputEmail3" value="12345678">
+                            <input type="password" class="form-control password" id="inputEmail3" value="12345678" name="password">
                         </div>
                     </div>
                
@@ -64,7 +64,82 @@
             </form>
         </div>
     </div>
+<!-- modal框 -->
+<div class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title">提示信息!!!</h4>
+            </div>
+            <div class="modal-body">
+              <p>恭喜你，修改成功了哦&hellip;</p>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      <!-- 自己的逻辑 -->
+      <script>
+          //获取用户数据--从接口 拉取数据 渲染到页面的各个表单元素标签的 值,就图片特殊点
+        $(function(){
+            $.ajax({
+                url: 'https://autumnfish.cn/big/admin/userinfo_get',
+                type:'get',
+                success:function(backData){
+                    for (var key in backData.data){
+                        $('input.'+key+'').val(backData.data[key])
+                    }// 相当于 input.email input.nickname
+                    // 单独的设置图片
+                    $('.input_pic').attr('src',backData.data.user_pic)
+                }
+            })
+            //当元素的值发生改变时，会发生 change 事件。 用户图标事件绑定
+            $('#exampleInputFile').change(function(e){
+                //利用H5新增的方法 把该文件变成url地址,这样便于访问
+                var url = URL.createObjectURL(this.files[0])
+                // 设置url地址 给img标签
+                $(this)
+                    .prev('img')
+                    .attr('src', url)
+            })
 
+             // 保存按钮的点击事件--用到了一个新技术:前提给表单标签加用data属性name
+             $('.btn-success').click(function(e){
+                 //1.干掉 表单的默认事件
+                 e.preventDefault()
+                 //2.获取 此接口数据
+                 $.ajax({
+                     url:'https://autumnfish.cn/big/admin/userinfo_edit',
+                     type:'post',
+                     data:FormData,//新技术-页面所有表单数据发送入接口 方法
+                     contentType:false, //不设置请求头 用默认值
+                     processData:false,// 不把数据变为 key=value&key2=value2
+                     success:function(backData){
+                         //返回数据判断-成功 弹框+刷新页面数据
+                         if(backData.code == 200){
+                             $('.modal').modal()
+                             //刷新页面 计时器
+                             setTimeout(function(){
+                                 //刷新 重加载方法调用
+                                 window.location.reload()
+                             },1000)
+                         }
+                     }
+                 })
+             })
+        })
+
+      </script>
 </body>
 
 </html>

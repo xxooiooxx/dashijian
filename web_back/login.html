@@ -28,7 +28,8 @@
                 <input type="text" class="input_txt" placeholder="邮箱/手机号">
                 <input type="password" class="input_pass" placeholder="密码">
                 <p class="login_p"></p>
-                <input type="submit" class="input_sub" value="登 录">
+                <button type="submit" class="input_sub" value="">登 录
+                    </button>
             </form>
         </div>
 
@@ -48,17 +49,17 @@
         // 获取value值 .trim()清除空格
         var user_name = $('.input_txt').val().trim()
         var password = $('.input_pass').val().trim()
-         // 增加loaing
-        //  $('.input_sub').attr('value','')
-        //  $('.input_sub').css('background', url('../images/5-121204194036.gif'))
+         // 给登陆按钮 增加loaing,缓存动画
          $('.input_sub').addClass('loading')
-          // 清空内容
+          // 提示内容 清空内容
           $('.login_p').html('')
-          //调用接口
+         
           if(user_name == '' || password == ''){
+            $('.input_sub').removeClass('loading') 
             $('.login_p').text('用户名,密码不能为空')
             return
         }
+         //调用接口
           $.ajax({
             url: 'https://autumnfish.cn/big/admin/login',
             type: 'post',
@@ -67,17 +68,17 @@
                 password:password
             },
             success:function(backData){
+                 // 移除loading
                 setTimeout(() => {
-                    $('.input_sub').removeClass('loading')
-              if(backData.code == 200){                                  
+                    $('.input_sub').removeClass('loading') 
+                    
+                if(backData.code == 200){                                  
                     window.location.href = './index.html'               
                 }else if (backData.code == 400){
                     $('.login_p').text('用户名,密码错误,请重新输入')
-                }
-                
-                // $('.input_sub').removeClass('loading')
-            
-                }, 1500)
+                }                      
+                }, 1000)
+               
             }
           })
     }

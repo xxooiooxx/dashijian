@@ -19,7 +19,7 @@
         <a href="#" class="logo"><img src="images/logo02.png" alt="logo"></a>
         <div class="user_info">
             <img src="images/2.jpg" alt="person">
-            <span>欢迎&nbsp;&nbsp;李思思</span>
+            <span>欢迎&nbsp;&nbsp;<i>李思思</i></span>
             <b>管理员</b>
         </div>
         <div class="menu">
@@ -134,6 +134,7 @@
 
     </script>
 <script>
+    $(function(){
     $('.icon-tuichu').click(function(){
         $('.modal-logout').modal()
     })
@@ -150,6 +151,22 @@
             }
         })
     })
+    //头像信息获取更新
+    $.ajax({
+        url:'https://autumnfish.cn/big/admin/getuser',
+        type:'get',
+        success:function(backData){
+            //右边登陆
+            $('.user_info img').attr('src',backData.data.user_pic)
+            //左边登陆
+            $('.user_center_link img').attr('src',backData.data.user_pic)
+           
+            // $('.user_info span').text(backData.data.nickname)
+            //text方法 转义符 &nusb 用不了 解决方法 在html 里面加嵌套<sapn>欢迎&nusp &nbsp <i>用户名</i><span>
+                $('.user_info i').html(backData.data.nickname)
+        }
+    })
+})
 </script>
 </body>
 </html>

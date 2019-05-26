@@ -24,19 +24,19 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control username" id="inputEmail3" value="李思思" name="username">
+                        <input type="text" class="form-control username"  value="李思思" name="username">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control nickname" id="inputEmail3" value="思思" name="nickname">
+                        <input type="text" class="form-control nickname"  value="思思" name="nickname">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control email" id="inputEmail3" value="lisisi@126.com"  name="email">
+                        <input type="text" class="form-control email"  value="lisisi@126.com"  name="email">
                     </div>
                 </div>
                 
@@ -51,7 +51,7 @@
                 <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
                         <div class="col-sm-4">
-                            <input type="password" class="form-control password" id="inputEmail3" value="12345678" name="password">
+                            <input type="password" class="form-control password" value="12345678" name="password">
                         </div>
                     </div>
                
@@ -96,11 +96,15 @@
                 url: 'https://autumnfish.cn/big/admin/userinfo_get',
                 type:'get',
                 success:function(backData){
+                    //class 和 data的属性名一致
+                    console.log(backData);
+                    console.log(key);
+                    
                     for (var key in backData.data){
                         $('input.'+key+'').val(backData.data[key])
                     }// 相当于 input.email input.nickname
                     // 单独的设置图片
-                    $('.input_pic').attr('src',backData.data.user_pic)
+                    $('.user_pic').attr('src',backData.data.user_pic)
                 }
             })
             //当元素的值发生改变时，会发生 change 事件。 用户图标事件绑定
@@ -118,10 +122,12 @@
                  //1.干掉 表单的默认事件
                  e.preventDefault()
                  //2.获取 此接口数据
+                 //新技术-自动获取这个表单 拥有name属性的值 发送到接口
+                 var formData = new FormData($('.article_form')[0])
                  $.ajax({
                      url:'https://autumnfish.cn/big/admin/userinfo_edit',
                      type:'post',
-                     data:FormData,//新技术-页面所有表单数据发送入接口 方法
+                     data:formData,
                      contentType:false, //不设置请求头 用默认值
                      processData:false,// 不把数据变为 key=value&key2=value2
                      success:function(backData){
